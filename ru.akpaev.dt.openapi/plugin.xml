@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="ru.akpaev.dt.openapi.createfromopenapispec"
+            name="%createFromOpenApiSpec.name">
+      </command>
+   </extension>
+   <extension point="org.eclipse.ui.menus">
+    <menuContribution
+          allPopups="false"
+          locationURI="popup:com._1c.g5.v8.dt.navigator.ui.navigator.popup">
+       <command
+             commandId="ru.akpaev.dt.openapi.createfromopenapispec"
+             style="push">
+             <visibleWhen
+                  checkEnabled="false">
+               <and>
+                  <with
+                        variable="selection">
+                     <and>
+                        <count
+                              value="1">
+                        </count>
+                        <iterate
+                              operator="and">
+                           <instanceof
+                                 value="com._1c.g5.v8.dt.md.ui.navigator.adapters.HTTPServiceNavigatorAdapter$Folder">
+                           </instanceof>
+                        </iterate>
+                     </and>
+                  </with>
+               </and>
+            </visibleWhen>
+       </command>
+    </menuContribution>
+</extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="ru.akpaev.dt.openapi.ExecutableExtensionFactory:ru.akpaev.dt.openapi.CreateFromOpenApiSpecHandler"
+            commandId="ru.akpaev.dt.openapi.createfromopenapispec">
+      </handler>
+   </extension>
+</plugin>
