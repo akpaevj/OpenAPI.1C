@@ -100,7 +100,7 @@ public class OpenApiRoot
             var nodeText = node.toPrettyString();
             T value = mapper.readValue(nodeText, type);
             if (value.isRef())
-                return resolveReference(ref, type);
+                return resolveReference(value.getRef(), type);
             else
                 return value;
         }

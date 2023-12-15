@@ -85,7 +85,7 @@ public class HttpServiceUtil
         var methodParameters = method.getParameters();
 
         var templateHasParameters = templateParameters != null && templateParameters.size() > 0;
-        var methodHasParameters = templateParameters != null && templateParameters.size() > 0;
+        var methodHasParameters = methodParameters != null && methodParameters.size() > 0;
         var hasParameters = templateHasParameters && methodHasParameters;
 
         if (hasParameters)
@@ -116,8 +116,12 @@ public class HttpServiceUtil
 
         for (var openApiParameter : parameters)
         {
+            var parameter = openApiParameter;
+            if (parameter.isRef())
+                parameter = root.resolveReference(openApiParameter.getRef(), openApiParameter.getClass());
+
             var paramTemplateContent = ""; //$NON-NLS-1$
-            var in = openApiParameter.getIn();
+            var in = parameter.getIn();
             switch (in)
             {
             case "path": //$NON-NLS-1$
@@ -132,14 +136,7 @@ public class HttpServiceUtil
             if (paramTemplateContent.length() > 0)
             {
                 var paramTemplate = new StringTemplate(paramTemplateContent);
-
-                if (openApiParameter.isRef())
-                {
-                    var value = root.resolveReference(openApiParameter.getRef(), openApiParameter.getClass());
-                    paramTemplate.setAttribute("PARAM_NAME", value.getName()); //$NON-NLS-1$
-                }
-                else
-                    paramTemplate.setAttribute("PARAM_NAME", openApiParameter.getName()); //$NON-NLS-1$
+                paramTemplate.setAttribute("PARAM_NAME", parameter.getName()); //$NON-NLS-1$
 
                 builder.append(paramTemplate.toString());
                 builder.append(System.lineSeparator());
